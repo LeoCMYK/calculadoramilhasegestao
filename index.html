@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Diagnóstico Financeiro · Cartões Corporativos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    /* Cores — extraídas dos tokens do Figma */
+    --ink-800: #0e0e0e;
+    --surface: #1c1a18;
+    --surface-row: #252220;
+    --input-bg: #131313;
+    --border: #34302c;
+    --border-brand: #c0661e;
+    --brand-500: #f58634;
+    --brand-300: #fbb477;
+    --brand-tint: rgba(245, 134, 52, 0.12);
+    --red: #e5564b;
+    --red-tint: rgba(229, 86, 75, 0.12);
+    --text-100: #f8f8f8;
+    --text-300: #cfc9c2;
+    --text-500: #9a938b;
+    --text-700: #6b655f;
+    --btn-ink: #1c1206;
+    --shadow-card: 0 18px 40px -24px rgba(0, 0, 0, 0.8);
+    --shadow-glow: 0 10px 30px -8px rgba(245, 134, 52, 0.45);
+    --font-display: "Montserrat", system-ui, sans-serif;
+    --font-body: "Manrope", system-ui, sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: var(--ink-800);
+    color: var(--text-100);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    padding: 40px 20px;
+  }
+
+  .stage { width: 100%; max-width: 1100px; }
+
+  /* utilidades de texto */
+  .eyebrow {
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 3.2px;
+    text-transform: uppercase;
+    color: var(--brand-500);
+  }
+  .accent { color: var(--brand-500); }
+  .accent-red { color: var(--red); }
+  .strong { font-family: var(--font-body); font-weight: 700; color: var(--text-100); }
+
+  /* ============ FASE 1 — Captura inicial ============ */
+  .hero-block {
+    border-radius: 22px;
+    padding: 40px 20px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    background: radial-gradient(120% 90% at 50% 100%, rgba(45, 31, 20, 1) 0%, rgba(45, 31, 20, 0) 60%);
+  }
+  .hero-block h1 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(26px, 4.2vw, 32px);
+    line-height: 1.1;
+    color: var(--text-100);
+  }
+  .hero-block .lede {
+    font-size: clamp(15px, 2.2vw, 18px);
+    line-height: 1.6;
+    color: var(--text-300);
+    max-width: 1060px;
+  }
+
+  .calc-card {
+    margin-top: 8px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    box-shadow: var(--shadow-card);
+  }
+  .money-label {
+    font-weight: 600;
+    font-size: 12.5px;
+    color: var(--text-300);
+  }
+  .money-input {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--input-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 18px;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  .money-input:focus-within {
+    border-color: var(--brand-500);
+    box-shadow: 0 0 0 3px rgba(245, 134, 52, 0.12);
+  }
+  .money-input .prefix {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 28px;
+    color: var(--brand-500);
+  }
+  .money-input input {
+    flex: 1;
+    min-width: 0;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 32px;
+    color: var(--text-100);
+  }
+  .money-input input::placeholder { color: var(--text-700); }
+
+  .hint { font-size: 13px; color: var(--text-500); }
+  .hint.error { color: var(--red); }
+
+  .btn {
+    width: 100%;
+    border: none;
+    cursor: pointer;
+    background: var(--brand-500);
+    color: var(--btn-ink);
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 15px;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+    padding: 16px 34px;
+    border-radius: 999px;
+    box-shadow: var(--shadow-glow);
+    transition: transform 0.12s ease, filter 0.12s ease;
+    text-align: center;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .btn:hover { filter: brightness(1.05); transform: translateY(-1px); }
+  .btn:active { transform: translateY(0); }
+
+  .trust { display: flex; flex-wrap: wrap; gap: 9px; }
+  .pill-meta {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 7px 14px;
+    font-size: 12.5px;
+    color: var(--text-300);
+  }
+  .pill-meta .check { color: var(--brand-500); font-weight: 700; }
+
+  /* ============ FASE 2 — Modal de captura ============ */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.72);
+    backdrop-filter: blur(4px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 50;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    position: relative;
+    width: 100%;
+    max-width: 470px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 39px;
+    box-shadow: var(--shadow-card);
+    animation: pop 0.22s ease;
+  }
+  @keyframes pop {
+    from { opacity: 0; transform: translateY(10px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .modal .close-x {
+    position: absolute;
+    top: 16px;
+    right: 18px;
+    background: none;
+    border: none;
+    color: var(--text-500);
+    font-size: 26px;
+    line-height: 1;
+    cursor: pointer;
+    transition: color 0.12s ease;
+  }
+  .modal .close-x:hover { color: var(--text-100); }
+  .ready {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    font-size: 13px;
+    color: var(--text-300);
+    margin-bottom: 16px;
+  }
+  .pulse {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--brand-500);
+    box-shadow: 0 0 0 0 rgba(245, 134, 52, 0.6);
+    animation: pulse 1.6s infinite;
+  }
+  @keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(245, 134, 52, 0.5); }
+    70% { box-shadow: 0 0 0 8px rgba(245, 134, 52, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(245, 134, 52, 0); }
+  }
+  .modal h2 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 24px;
+    line-height: 1.15;
+    color: var(--text-100);
+    margin-bottom: 12px;
+  }
+  .modal .desc {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text-300);
+    margin-bottom: 18px;
+  }
+  .field { margin-bottom: 14px; }
+  .field label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-300);
+    margin-bottom: 7px;
+  }
+  .field input {
+    width: 100%;
+    background: var(--input-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 13px 15px;
+    color: var(--text-100);
+    font-family: var(--font-body);
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  .field input::placeholder { color: var(--text-700); }
+  .field input:focus {
+    border-color: var(--brand-500);
+    box-shadow: 0 0 0 3px rgba(245, 134, 52, 0.12);
+  }
+  .field input.invalid { border-color: var(--red); }
+  .modal .btn { margin-top: 4px; }
+  .privacy {
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--text-500);
+    margin-top: 14px;
+    text-align: left;
+  }
+
+  /* ============ FASE 3 — Resultado ============ */
+  .result { display: none; flex-direction: column; gap: 18px; }
+  .result.open { display: flex; }
+
+  .result-head {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    padding-bottom: 4px;
+  }
+  .result-head h2 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(22px, 3.4vw, 26px);
+    line-height: 1.15;
+    color: var(--text-100);
+  }
+
+  .step {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    box-shadow: var(--shadow-card);
+  }
+  .step-tag { display: flex; align-items: center; gap: 12px; }
+  .step-tag .num {
+    width: 38px; height: 38px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--brand-tint);
+    border: 1px solid var(--border-brand);
+    border-radius: 10px;
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 16px;
+    color: var(--brand-500);
+  }
+  .step-tag .ttl {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 1.56px;
+    text-transform: uppercase;
+    color: var(--brand-500);
+  }
+  .step h3 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 1.3;
+    color: var(--text-100);
+  }
+  .step p { font-size: 15px; line-height: 1.6; color: var(--text-300); }
+
+  /* Breakdown */
+  .breakdown {
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+  .brow {
+    background: var(--surface-row);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 15px 18px;
+  }
+  .brow .b-main { font-size: 14px; color: var(--text-300); }
+  .brow .b-sub { font-size: 11.5px; color: var(--text-700); margin-top: 3px; }
+  .brow .b-val {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--text-100);
+    text-align: right;
+    white-space: nowrap;
+  }
+  .brow.total {
+    background: var(--brand-tint);
+  }
+  .brow.total .b-main {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--brand-300);
+  }
+  .brow.total .b-val {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 24px;
+    color: var(--brand-500);
+  }
+
+  /* Loss cards */
+  .loss { display: flex; align-items: center; gap: 14px; padding-top: 8px; }
+  .loss-card {
+    flex: 1;
+    background: var(--red-tint);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 26px 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 9px;
+    text-align: center;
+  }
+  .loss-card .big {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 60px;
+    line-height: 1;
+    color: var(--red);
+  }
+  .loss-card .lbl {
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 1.04px;
+    text-transform: uppercase;
+    color: var(--text-300);
+    line-height: 1.45;
+  }
+  .loss .or { font-family: var(--font-display); font-weight: 600; font-size: 14px; color: var(--text-700); }
+
+  /* CTA */
+  .cta {
+    border: 1px solid var(--border-brand);
+    border-radius: 22px;
+    padding: 44px 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    text-align: center;
+    background: linear-gradient(176deg, #2d1f14 9.6%, #1c1a18 89.6%);
+  }
+  .cta .badge {
+    background: var(--brand-500);
+    color: var(--btn-ink);
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 1.54px;
+    text-transform: uppercase;
+    padding: 6px 13px;
+    border-radius: 999px;
+  }
+  .cta h3 {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 24px;
+    line-height: 1.12;
+    color: var(--text-100);
+    max-width: 720px;
+  }
+  .cta p { font-size: 15px; line-height: 1.6; color: var(--text-300); max-width: 640px; }
+  .cta .btn { width: auto; }
+
+  .footnote {
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
+    padding-top: 28px;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--text-700);
+  }
+
+  @media (max-width: 640px) {
+    body { padding: 20px 14px; }
+    .calc-card, .step { padding: 22px; }
+    .money-input input { font-size: 26px; }
+    .money-input .prefix { font-size: 22px; }
+    .loss { flex-direction: column; }
+    .loss-card { width: 100%; }
+    .loss-card .big { font-size: 48px; }
+    .cta { padding: 32px 22px; }
+    .modal { padding: 28px 22px; }
+  }
+</style>
+</head>
+<body>
+<div class="stage">
+
+  <!-- ===================== FASE 1 — CAPTURA INICIAL ===================== -->
+  <section id="phase-capture">
+    <div class="hero-block">
+      <p class="eyebrow">Diagnóstico financeiro · Cartões corporativos</p>
+      <h1>Descubra quanto dinheiro o seu negócio está <span class="accent">deixando na mesa</span> todos os meses.</h1>
+      <p class="lede">Digite abaixo o seu gasto médio mensal no cartão de crédito. Em segundos, revelamos quantas viagens e quanto valor a sua empresa perdeu no último ano.</p>
+    </div>
+
+    <div class="calc-card">
+      <label class="money-label" for="spend-input">Seu gasto médio mensal no cartão</label>
+      <div class="money-input">
+        <span class="prefix">R$</span>
+        <input id="spend-input" type="text" inputmode="numeric" autocomplete="off" placeholder="0,00" />
+      </div>
+      <p class="hint" id="spend-hint">A análise é calibrada para gastos a partir de R$ 2.000/mês.</p>
+      <button class="btn" id="calc-btn">Calcular meu prejuízo</button>
+      <div class="trust">
+        <span class="pill-meta"><span class="check">✓</span> Resultado em segundos</span>
+        <span class="pill-meta"><span class="check">✓</span> Cotação do dólar em tempo real</span>
+        <span class="pill-meta"><span class="check">✓</span> Dados reais de viagens</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== FASE 3 — RESULTADO ===================== -->
+  <section class="result" id="phase-result">
+    <div class="result-head">
+      <p class="eyebrow">Diagnóstico concluído</p>
+      <h2>O seu negócio <span class="accent-red">perdeu dinheiro</span> no último ano. Veja os números frios.</h2>
+    </div>
+
+    <!-- Passo 1 -->
+    <div class="step">
+      <div class="step-tag"><span class="num">1</span><span class="ttl">O Diagnóstico Inicial</span></div>
+      <h3>Com um gasto mensal de <span id="r-monthly">R$ 0,00</span>, o seu negócio tem um potencial gigantesco.</h3>
+      <p>Com esse volume de despesas, a sua empresa deveria estar acumulando uma quantidade massiva de milhas todos os meses. Sem a inteligência financeira aplicada, é muito provável que você esteja utilizando um cartão comum que pontua mal — deixando milhares de reais na mesa em vez de convertê-los em ativos para o negócio. Você está deixando o dinheiro ir pelo ralo a cada fatura paga.</p>
+    </div>
+
+    <!-- Passo 2 -->
+    <div class="step">
+      <div class="step-tag"><span class="num">2</span><span class="ttl">O Cálculo do Prejuízo</span></div>
+      <h3>Os números exatos do que foi jogado fora em 12 meses.</h3>
+      <div class="breakdown">
+        <div class="brow">
+          <div>
+            <div class="b-main">Gasto anual em reais</div>
+            <div class="b-sub"><span id="r-monthly-row">R$ 0,00</span> × 12 meses</div>
+          </div>
+          <div class="b-val" id="r-annual-brl">R$ 0,00</div>
+        </div>
+        <div class="brow">
+          <div>
+            <div class="b-main">Gasto anual em dólar</div>
+            <div class="b-sub">cotação de hoje: R$ 5,30</div>
+          </div>
+          <div class="b-val" id="r-annual-usd">US$ 0,00</div>
+        </div>
+        <div class="brow">
+          <div>
+            <div class="b-main">Pontos perdidos pelos gastos</div>
+            <div class="b-sub" id="r-mult-line">multiplicador ideal: 3,7 pts/USD · cartão Mastercard Black</div>
+          </div>
+          <div class="b-val" id="r-points-spend">0 pts</div>
+        </div>
+        <div class="brow">
+          <div>
+            <div class="b-main">Bônus de adesão perdido</div>
+            <div class="b-sub">aplicável à sua faixa de gastos</div>
+          </div>
+          <div class="b-val" id="r-bonus">0 pts</div>
+        </div>
+        <div class="brow total">
+          <div class="b-main">Total do prejuízo acumulado</div>
+          <div class="b-val" id="r-total">0 pts</div>
+        </div>
+      </div>
+      <p>Convertendo esse volume de pontos desperdiçados para a logística real da sua empresa, você deixou de fazer:</p>
+      <div class="loss">
+        <div class="loss-card">
+          <div class="big" id="r-intl">0</div>
+          <div class="lbl">viagens internacionais<br />ida e volta</div>
+        </div>
+        <span class="or">ou</span>
+        <div class="loss-card">
+          <div class="big" id="r-nat">0</div>
+          <div class="lbl">viagens nacionais<br />ida e volta</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Passo 3 -->
+    <div class="step">
+      <div class="step-tag"><span class="num">3</span><span class="ttl">A Estratégia Revelada</span></div>
+      <h3>Esse volume não é mágica — é inteligência financeira.</h3>
+      <p>O cálculo acima pressupõe uma estratégia específica e validada: utilizar o cartão ideal para a sua faixa exata de gastos (no seu caso, o <span class="strong" id="r-card-name">Mastercard Black</span>), combinado com a assinatura do <span class="strong">Clube LATAM Pass</span> — que custa apenas R$ 42,00 por mês.</p>
+      <p>É essa exata combinação de cartão certo + clube que ativa os maiores multiplicadores e garante o bônus de adesão logo nas primeiras faturas, maximizando o seu acúmulo de forma automática.</p>
+    </div>
+
+    <!-- Passo 4 -->
+    <div class="step">
+      <div class="step-tag"><span class="num">4</span><span class="ttl">A Decisão</span></div>
+      <h3>Todo mês sem essa estrutura, você está rasgando dinheiro.</h3>
+      <p>Atualmente, a sua empresa paga integralmente por deslocamentos corporativos que já poderiam estar sendo custeados pelos próprios gastos fixos da operação. Pare de perder viagens e lucros que pertencem legitimamente ao seu negócio.</p>
+    </div>
+
+    <!-- CTA -->
+    <div class="cta">
+      <span class="badge">Acesso imediato</span>
+      <h3>Transforme seus gastos fixos em passagens aéreas a custo praticamente zero.</h3>
+      <p>Conheça o curso <span class="strong">Milhas e Gestão para Empresas</span> e aprenda o passo a passo definitivo para converter passivos em ativos e alavancar a saúde financeira do seu caixa.</p>
+      <a href="#" class="btn">Quero parar de perder dinheiro e acessar o curso</a>
+    </div>
+
+    <p class="footnote">Cálculo baseado na cotação USD/BRL de R$ 5,30 e na média de pontos por viagem da base voy8 (70.000 pts internacional · 22.000 pts nacional). Valores estimados para fins de simulação.</p>
+  </section>
+</div>
+
+<!-- ===================== FASE 2 — MODAL DE CAPTURA ===================== -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <button class="close-x" id="modal-close" aria-label="Fechar">×</button>
+    <div class="ready"><span class="pulse"></span> Seu diagnóstico está pronto</div>
+    <h2 id="modal-title">Descobrimos exatamente quanto o seu negócio perdeu.</h2>
+    <p class="desc">Preencha seus dados abaixo para liberar o seu resultado completo instantaneamente.</p>
+
+    <form id="capture-form" novalidate>
+      <div class="field">
+        <label for="f-nome">Nome completo</label>
+        <input id="f-nome" name="nome" type="text" placeholder="Como podemos te chamar?" autocomplete="name" />
+      </div>
+      <div class="field">
+        <label for="f-email">E-mail profissional</label>
+        <input id="f-email" name="email" type="email" placeholder="voce@empresa.com.br" autocomplete="email" />
+      </div>
+      <div class="field">
+        <label for="f-whats">WhatsApp</label>
+        <input id="f-whats" name="whatsapp" type="tel" placeholder="(00) 00000-0000" autocomplete="tel" />
+      </div>
+      <button class="btn" type="submit">Ver meu resultado agora</button>
+      <p class="privacy">Seus dados estão seguros e serão usados apenas para enviar seu diagnóstico e materiais sobre gestão de milhas.</p>
+    </form>
+  </div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ============================================================
+     PARÂMETROS DO CÁLCULO
+     Conforme o documento "Fluxo de Execução — calculadora de
+     gastos para milhas". Verificado contra o exemplo oficial:
+       • R$ 30.000/mês → US$ 67.924,52 · 251.320 pts + 40.000
+         = 291.320 pts → 4 intl / 13 nac
+     ============================================================ */
+  var CONFIG = {
+    DOLLAR_RATE: 5.30,        // Cotacao_Dolar (USD/BRL)
+    INTL_TRIP_COST: 70000,    // Custo_Viagem_Int_voy8 (pts ida e volta)
+    NAT_TRIP_COST: 22000,     // Custo_Viagem_Nac_voy8 (pts ida e volta)
+    MIN_SPEND: 2000           // gasto mínimo calibrado (R$/mês)
+  };
+
+  /* Tabela de Parâmetros Definitiva (faixas de gasto mensal).
+     Enquadramento por faixa — sem escolha do usuário.
+     Limites: Gold [2.000, 5.000) · Platinum [5.000, 10.000)
+              Visa Infinite [10.000, 20.000] · Mastercard Black (> 20.000) */
+  var TIERS = [
+    { min: 20000.0001, card: "Mastercard Black", mult: 3.7, bonus: 40000 },
+    { min: 10000,      card: "Visa Infinite",    mult: 3.7, bonus: 40000 },
+    { min: 5000,       card: "Platinum",         mult: 3.0, bonus: 16000 },
+    { min: 2000,       card: "Gold",             mult: 2.4, bonus: 2000  }
+  ];
+
+  function getTier(monthlySpend) {
+    for (var i = 0; i < TIERS.length; i++) {
+      if (monthlySpend >= TIERS[i].min) return TIERS[i];
+    }
+    return TIERS[TIERS.length - 1]; // fallback (não alcançado: input >= MIN_SPEND)
+  }
+
+  var fmtMult = new Intl.NumberFormat("pt-BR", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+  function truncate2(v) { return Math.floor(v * 100) / 100; } // trunca p/ 2 casas (conforme exemplo do doc)
+
+  /* ----------------- Formatadores pt-BR ----------------- */
+  var fmtBRL = new Intl.NumberFormat("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  var fmtUSD = new Intl.NumberFormat("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  var fmtPts = new Intl.NumberFormat("pt-BR", { maximumFractionDigits: 0 });
+
+  function brl(v) { return "R$ " + fmtBRL.format(v); }
+  function usd(v) { return "US$ " + fmtUSD.format(truncate2(v)); }
+  function pts(v) { return fmtPts.format(v) + " pts"; }
+
+  /* ----------------- Núcleo do cálculo -----------------
+     Estrutura exata do documento:
+       gasto_anual_reais  = gasto_mensal * 12
+       gasto_anual_dolar  = gasto_anual_reais / Cotacao_Dolar
+       pontos_gastos_ano  = gasto_anual_dolar * Multiplicador_Faixa_Com_Clube
+       pontos_totais      = pontos_gastos_ano + Bonus_Adesao
+       viagens_int        = pontos_totais / Custo_Viagem_Int_voy8
+       viagens_nac        = pontos_totais / Custo_Viagem_Nac_voy8 */
+  function calcular(monthlySpend) {
+    var tier = getTier(monthlySpend);
+    var annualBRL = monthlySpend * 12;
+    var annualUSD = annualBRL / CONFIG.DOLLAR_RATE;
+    var pointsFromSpend = Math.floor(annualUSD * tier.mult);
+    var totalPoints = pointsFromSpend + tier.bonus;
+    var intlTrips = Math.floor(totalPoints / CONFIG.INTL_TRIP_COST);
+    var natTrips = Math.floor(totalPoints / CONFIG.NAT_TRIP_COST);
+    return {
+      monthlySpend: monthlySpend,
+      tier: tier,
+      annualBRL: annualBRL,
+      annualUSD: annualUSD,
+      pointsFromSpend: pointsFromSpend,
+      signupBonus: tier.bonus,
+      totalPoints: totalPoints,
+      intlTrips: intlTrips,
+      natTrips: natTrips
+    };
+  }
+
+  /* ----------------- Máscara de moeda no input ----------------- */
+  var spendInput = document.getElementById("spend-input");
+  var spendCents = 0; // valor em centavos
+
+  function renderSpend() {
+    if (spendCents === 0) { spendInput.value = ""; return; }
+    spendInput.value = fmtBRL.format(spendCents / 100);
+  }
+  spendInput.addEventListener("input", function () {
+    var digits = spendInput.value.replace(/\D/g, "");
+    spendCents = digits ? parseInt(digits, 10) : 0;
+    renderSpend();
+    clearError();
+  });
+
+  function getSpendValue() { return spendCents / 100; }
+
+  /* ----------------- Validação / erros ----------------- */
+  var hint = document.getElementById("spend-hint");
+  var DEFAULT_HINT = "A análise é calibrada para gastos a partir de R$ 2.000/mês.";
+  function showError(msg) { hint.textContent = msg; hint.classList.add("error"); }
+  function clearError() { hint.textContent = DEFAULT_HINT; hint.classList.remove("error"); }
+
+  /* ----------------- Fase 1 → abre modal ----------------- */
+  var overlay = document.getElementById("modal-overlay");
+  document.getElementById("calc-btn").addEventListener("click", function () {
+    var value = getSpendValue();
+    if (value < CONFIG.MIN_SPEND) {
+      showError("Informe um gasto mensal a partir de R$ 2.000,00 para liberar o diagnóstico.");
+      spendInput.focus();
+      return;
+    }
+    openModal();
+  });
+
+  function openModal() {
+    overlay.classList.add("open");
+    document.body.style.overflow = "hidden";
+    document.getElementById("f-nome").focus();
+  }
+  function closeModal() {
+    overlay.classList.remove("open");
+    document.body.style.overflow = "";
+  }
+  document.getElementById("modal-close").addEventListener("click", closeModal);
+  overlay.addEventListener("click", function (e) { if (e.target === overlay) closeModal(); });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeModal(); });
+
+  /* ----------------- Máscara de WhatsApp ----------------- */
+  var whats = document.getElementById("f-whats");
+  whats.addEventListener("input", function () {
+    var d = whats.value.replace(/\D/g, "").slice(0, 11);
+    var out = "";
+    if (d.length > 0) out = "(" + d.slice(0, 2);
+    if (d.length >= 2) out += ") ";
+    if (d.length > 2) out += d.slice(2, 7);
+    if (d.length > 7) out += "-" + d.slice(7, 11);
+    whats.value = out;
+  });
+
+  /* ----------------- Fase 2 → valida e mostra resultado ----------------- */
+  var form = document.getElementById("capture-form");
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var nome = document.getElementById("f-nome");
+    var email = document.getElementById("f-email");
+    var ok = true;
+
+    [nome, email, whats].forEach(function (el) { el.classList.remove("invalid"); });
+
+    if (nome.value.trim().length < 2) { nome.classList.add("invalid"); ok = false; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim())) { email.classList.add("invalid"); ok = false; }
+    if (whats.value.replace(/\D/g, "").length < 10) { whats.classList.add("invalid"); ok = false; }
+    if (!ok) return;
+
+    // Aqui você integraria com seu backend/CRM (envio de lead).
+    var lead = { nome: nome.value.trim(), email: email.value.trim(), whatsapp: whats.value.trim() };
+
+    renderResult(calcular(getSpendValue()), lead);
+    closeModal();
+    showResult();
+  });
+
+  /* ----------------- Fase 3 → renderiza resultado ----------------- */
+  function renderResult(r, lead) {
+    document.getElementById("r-monthly").textContent = brl(r.monthlySpend);
+    document.getElementById("r-monthly-row").textContent = brl(r.monthlySpend);
+    document.getElementById("r-annual-brl").textContent = brl(r.annualBRL);
+    document.getElementById("r-annual-usd").textContent = usd(r.annualUSD);
+    document.getElementById("r-mult-line").textContent =
+      "multiplicador ideal: " + fmtMult.format(r.tier.mult) + " pts/USD · cartão " + r.tier.card;
+    document.getElementById("r-points-spend").textContent = pts(r.pointsFromSpend);
+    document.getElementById("r-bonus").textContent = pts(r.signupBonus);
+    document.getElementById("r-card-name").textContent = r.tier.card;
+    document.getElementById("r-total").textContent = pts(r.totalPoints);
+    document.getElementById("r-intl").textContent = r.intlTrips;
+    document.getElementById("r-nat").textContent = r.natTrips;
+  }
+
+  function showResult() {
+    document.getElementById("phase-capture").style.display = "none";
+    var result = document.getElementById("phase-result");
+    result.classList.add("open");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  /* Permite enviar o gasto com Enter na Fase 1 */
+  spendInput.addEventListener("keydown", function (e) {
+    if (e.key === "Enter") { e.preventDefault(); document.getElementById("calc-btn").click(); }
+  });
+})();
+</script>
+</body>
+</html>
