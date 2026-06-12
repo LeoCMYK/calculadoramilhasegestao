@@ -774,13 +774,41 @@
     if (whats.value.replace(/\D/g, "").length < 10) { whats.classList.add("invalid"); ok = false; }
     if (!ok) return;
 
-    // Aqui você integraria com seu backend/CRM (envio de lead).
-    var lead = { nome: nome.value.trim(), email: email.value.trim(), whatsapp: whats.value.trim() };
+    var resultado = calcular(getSpendValue());
 
-    renderResult(calcular(getSpendValue()), lead);
+    // Lead enviado ao backend (que repassa para RD Station + Mautic).
+    var lead = {
+      nome: nome.value.trim(),
+      email: email.value.trim(),
+      whatsapp: whats.value.trim(),
+      gasto_mensal: getSpendValue(),
+      // dados calculados — úteis para segmentação no CRM
+      cartao: resultado.tier.card,
+      pontos_totais: resultado.totalPoints,
+      viagens_internacionais: resultado.intlTrips,
+      viagens_nacionais: resultado.natTrips
+    };
+    enviarLead(lead);
+
+    renderResult(resultado, lead);
     closeModal();
     showResult();
   });
+
+  /* Envia o lead para a função serverless (/api/lead) sem bloquear a UX.
+     keepalive garante o envio mesmo durante a transição para a Fase 3. */
+  function enviarLead(lead) {
+    try {
+      fetch("/api/lead", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(lead),
+        keepalive: true
+      }).catch(function (err) { console.error("Falha ao enviar lead:", err); });
+    } catch (err) {
+      console.error("Falha ao enviar lead:", err);
+    }
+  }
 
   /* ----------------- Fase 3 → renderiza resultado ----------------- */
   function renderResult(r, lead) {

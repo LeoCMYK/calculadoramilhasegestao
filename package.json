@@ -1,0 +1,6 @@
+{
+  "name": "calculadora-m-g",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Calculadora de gastos para milhas — captação de leads (RD Station + Mautic via Vercel)."
+}
