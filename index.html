@@ -795,13 +795,24 @@
     showResult();
   });
 
-  /* Envia o lead para a função serverless (/api/lead) sem bloquear a UX.
-     keepalive garante o envio mesmo durante a transição para a Fase 3. */
+  /* Endpoint do Google Apps Script (Web App) que grava o lead na planilha.
+     >>> Cole aqui a URL terminada em /exec gerada ao publicar o Apps Script. <<< */
+  var LEAD_ENDPOINT = "https://script.google.com/macros/s/AKfycbzjei0X9VnYcY-duYbv7THsX98r33TY7Qa-3Vb3DuvXBUdk7iyHk9mIAFOXEyCWMUadIQ/exec";
+
+  /* Envia o lead para a planilha sem bloquear a UX.
+     - mode:"no-cors" + text/plain: evita preflight de CORS do Apps Script.
+     - keepalive: garante o envio durante a transição para a Fase 3.
+     A resposta não é lida (no-cors), mas a linha é gravada na planilha. */
   function enviarLead(lead) {
+    if (!LEAD_ENDPOINT || LEAD_ENDPOINT.indexOf("/exec") === -1) {
+      console.warn("LEAD_ENDPOINT não configurado — lead não enviado.");
+      return;
+    }
     try {
-      fetch("/api/lead", {
+      fetch(LEAD_ENDPOINT, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        mode: "no-cors",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
         body: JSON.stringify(lead),
         keepalive: true
       }).catch(function (err) { console.error("Falha ao enviar lead:", err); });

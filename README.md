@@ -9,47 +9,39 @@ Página única (`index.html`) com o fluxo de 3 fases:
 O cálculo segue a *Tabela de Parâmetros Definitiva* (Gold / Platinum / Visa Infinite /
 Mastercard Black) e as fórmulas do documento oficial.
 
-## Captação de leads (RD Station + Mautic)
+## Captação de leads (Google Sheets)
 
-Ao enviar o modal, o front-end faz `POST /api/lead`. A função serverless
-[`api/lead.js`](api/lead.js) recebe o lead e repassa para os dois CRMs **a partir do
-servidor** — os tokens/credenciais ficam em variáveis de ambiente, nunca no navegador.
+Ao enviar o modal, o front-end faz um `POST` direto para um **Web App do Google Apps
+Script**, que grava cada lead como uma linha na planilha. Sem servidor próprio.
 
 ```
-Navegador (index.html)  ──POST /api/lead──▶  Vercel Function  ──▶  RD Station (Conversions API)
-                                                              └──▶  Mautic (form submit)
+Navegador (index.html)  ──POST──▶  Google Apps Script (Web App)  ──▶  Planilha
 ```
 
-### Deploy na Vercel
+### Como configurar
 
-1. Acesse <https://vercel.com> e faça login com o GitHub.
-2. **Add New > Project** e importe o repositório `Calculadora-M-G`.
-3. Não precisa configurar build (projeto estático + função em `/api`). Clique em **Deploy**.
-4. Em **Project Settings > Environment Variables**, adicione (veja [`.env.example`](.env.example)):
+1. Crie uma planilha no Google Sheets.
+2. **Extensões → Apps Script**, cole o conteúdo de [`google-apps-script.gs`](google-apps-script.gs) e salve.
+3. **Implantar → Nova implantação → App da Web**:
+   - *Executar como:* **Eu**
+   - *Quem pode acessar:* **Qualquer pessoa**
+4. Autorize e copie a **URL do app da Web** (termina em `/exec`).
+5. No `index.html`, cole essa URL na constante `LEAD_ENDPOINT` (dentro do `<script>`).
+6. Faça commit/push — a planilha passa a receber os leads.
 
-   | Variável | Valor |
-   |---|---|
-   | `RD_TOKEN` | Token público da API do RD Station |
-   | `RD_CONVERSION_IDENTIFIER` | `calculadora-milhas` (ou outro nome) |
-   | `MAUTIC_BASE_URL` | `https://seu-mautic.com.br` (sem barra final) |
-   | `MAUTIC_FORM_ID` | ID numérico do formulário no Mautic |
-   | `MAUTIC_FORM_NAME` | alias do formulário no Mautic |
+### Dados gravados por lead
 
-5. Faça um **Redeploy** para aplicar as variáveis.
+`Data/Hora · Nome · E-mail · WhatsApp · Gasto mensal · Cartão · Pontos totais ·
+Viagens internacionais · Viagens nacionais`
 
-### Onde encontrar cada valor
+### Notas
 
-- **RD Station — token público:** RD Station Marketing > **Integrações** > **Token de API** > *Token público*.
-- **RD Station — campo de gasto:** crie um campo personalizado com o identificador
-  `gasto_mensal_cartao` (a função envia em `cf_gasto_mensal_cartao`).
-- **Mautic — Form ID e alias:** Mautic > **Forms**. O ID aparece na URL de edição do form;
-  o **Alias** é uma coluna na lista de formulários.
-- **Mautic — aliases dos campos:** abra o formulário e confira o *alias* de cada campo
-  (E-mail, Nome, Telefone, Gasto). Ajuste o objeto `FIELD_ALIASES` no topo de
-  [`api/lead.js`](api/lead.js) para corresponder.
+- O envio usa `mode: "no-cors"`, então o navegador não lê a resposta — mas a linha é
+  gravada normalmente. Para testar o endpoint diretamente, faça um `POST` por `curl`.
+- Para atualizar o código do Apps Script mantendo a **mesma URL**: Implantar →
+  *Gerenciar implantações* → editar → *Nova versão* → Implantar.
 
-### Teste local
+## Hospedagem
 
-A função `/api/lead` só roda na Vercel (ou via `vercel dev`). Abrindo o `index.html`
-direto ou pelo GitHub Pages, o cálculo e o fluxo funcionam normalmente, mas o envio do
-lead falha silenciosamente (registrado no console) — é esperado fora da Vercel.
+Site estático — pode ser servido por GitHub Pages, Vercel, Netlify ou qualquer host
+de arquivos estáticos. Não há mais função serverless no projeto.
