@@ -6,7 +6,7 @@
 <title>Diagnóstico Financeiro · Cartões Corporativos</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Montserrat:wght@500;600;700;800&display=swap" rel="stylesheet" />
 <style>
   :root {
     /* Cores — extraídas dos tokens do Figma */
@@ -45,11 +45,12 @@
   body {
     min-height: 100vh;
     display: flex;
-    justify-content: center;
-    padding: 40px 20px;
+    flex-direction: column;
+    align-items: center;
+    padding: 0;
   }
 
-  .stage { width: 100%; max-width: 1100px; }
+  .stage { width: 100%; max-width: 1100px; min-height: 100vh; padding: 32px 20px; }
 
   /* utilidades de texto */
   .eyebrow {
@@ -76,7 +77,7 @@
   .hero-block h1 {
     font-family: var(--font-display);
     font-weight: 700;
-    font-size: clamp(26px, 4.2vw, 32px);
+    font-size: clamp(32px, 6vw, 52px);
     line-height: 1.1;
     color: var(--text-100);
   }
@@ -364,7 +365,6 @@
     padding: 15px 18px;
   }
   .brow .b-main { font-size: 14px; color: var(--text-300); }
-  .brow .b-sub { font-size: 11.5px; color: var(--text-700); margin-top: 3px; }
   .brow .b-val {
     font-family: var(--font-display);
     font-weight: 700;
@@ -454,16 +454,146 @@
   .cta p { font-size: 15px; line-height: 1.6; color: var(--text-300); max-width: 640px; }
   .cta .btn { width: auto; }
 
-  .footnote {
-    border-top: 1px solid rgba(255, 255, 255, 0.07);
-    padding-top: 28px;
-    font-size: 13px;
-    line-height: 1.6;
-    color: var(--text-700);
+  /* ============ Navbar (topo) ============ */
+  .site-nav {
+    width: 100%;
+    background: #0e0e0e;
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    position: sticky;
+    top: 0;
+    z-index: 40;
+  }
+  .nav-inner {
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 16px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+  }
+  .nav-logo img { height: 46px; width: auto; display: block; }
+  .nav-links { display: flex; align-items: center; gap: 22px; }
+  .nav-link {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 16px;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: var(--text-100);
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: default;
+    transition: color 0.15s ease;
+  }
+  a.nav-link { cursor: pointer; }
+  .nav-link:hover { color: var(--brand-500); }
+  .nav-cta {
+    display: inline-flex;
+    align-items: center;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: #3c1900;
+    background: linear-gradient(171deg, #ff923e 0%, #cf752e 100%);
+    padding: 11px 22px;
+    border-radius: 12px;
+    white-space: nowrap;
+    text-decoration: none;
+    cursor: pointer;
+    transition: filter 0.12s ease, transform 0.12s ease;
+  }
+  .nav-cta:hover { filter: brightness(1.05); transform: translateY(-1px); }
+  .nav-cta:not([href]) { cursor: default; }
+  .nav-cta:not([href]):hover { filter: none; transform: none; }
+  .nav-burger { display: none; }
+  .nav-mobile-menu { display: none; }
+
+  /* Navbar — colapso para hambúrguer */
+  @media (max-width: 1200px) {
+    .nav-links, .nav-cta { display: none; }
+    .nav-burger {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      width: 30px;
+      height: 20px;
+      padding: 0;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+    .nav-burger span { display: block; width: 100%; height: 2px; background: var(--text-100); border-radius: 2px; }
+    .nav-mobile-menu {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: #0e0e0e;
+      border-top: 1px solid var(--border);
+      padding: 6px 0 10px;
+      z-index: 40;
+    }
+    .nav-mobile-menu.open { display: flex; flex-direction: column; }
+    .nav-mobile-menu .nav-link { display: block; padding: 13px 24px; font-size: 16px; font-weight: 600; }
   }
 
+  /* ============ Rodapé institucional ============ */
+  .site-footer {
+    width: 100%;
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
+    margin-top: 0;
+    padding: 40px 20px 32px;
+  }
+  .footer-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 32px;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  .footer-inner .f-col { display: flex; flex-direction: column; gap: 16px; }
+  .f-brand img { height: 46px; width: auto; }
+  .f-social { display: flex; gap: 10px; }
+  .f-social a {
+    width: 34px; height: 34px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 9px;
+    background: var(--brand-500);
+    color: var(--btn-ink);
+    transition: filter 0.12s ease, transform 0.12s ease;
+  }
+  .f-social a:hover { filter: brightness(1.08); transform: translateY(-1px); }
+  .f-center {
+    flex: 1 1 220px;
+    align-items: center;
+    text-align: center;
+    gap: 6px;
+  }
+  .f-center a { color: var(--text-300); text-decoration: underline; font-size: 14px; transition: color 0.12s ease; }
+  .f-center a:hover { color: var(--brand-500); }
+  .f-copy { font-size: 14px; line-height: 1.35; color: var(--text-500); max-width: 240px; }
+  .f-info { text-align: left; gap: 20px; }
+  .f-info h4 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-100);
+    margin-bottom: 6px;
+  }
+  .f-info p { font-size: 13.5px; line-height: 1.55; color: var(--text-300); }
+  .f-info a { color: var(--text-300); text-decoration: underline; transition: color 0.12s ease; }
+  .f-info a:hover { color: var(--brand-500); }
+
   @media (max-width: 640px) {
-    body { padding: 20px 14px; }
+    .stage { padding: 32px 14px; }
     .calc-card, .step { padding: 22px; }
     .money-input input { font-size: 26px; }
     .money-input .prefix { font-size: 22px; }
@@ -472,18 +602,49 @@
     .loss-card .big { font-size: 48px; }
     .cta { padding: 32px 22px; }
     .modal { padding: 28px 22px; }
+    .footer-inner { flex-direction: column; align-items: center; text-align: center; gap: 28px; }
+    .footer-inner .f-col { align-items: center; }
+    .f-info { text-align: center; }
   }
 </style>
 </head>
 <body>
+<!-- ===================== NAVBAR ===================== -->
+<header class="site-nav">
+  <div class="nav-inner">
+    <div class="nav-logo"><img src="assets/logo.svg" alt="Milhas e Gestão" width="194" height="65" /></div>
+    <nav class="nav-links" aria-label="Navegação principal">
+      <a class="nav-link" href="https://milhasegestao.com.br/">Home</a>
+      <a class="nav-link" href="https://milhasegestao.com.br/">Mentor</a>
+      <a class="nav-link" href="https://milhasegestao.com.br/">Resultados</a>
+      <a class="nav-link" href="https://milhasegestao.com.br/">Metodologia</a>
+      <a class="nav-link" href="https://milhasegestao.com.br/">Calculadora</a>
+      <span class="nav-link">Blog</span>
+    </nav>
+    <a class="nav-cta" id="nav-cta" target="_blank" rel="noopener noreferrer">Comprar o curso</a>
+    <button class="nav-burger" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="mobile-menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <nav class="nav-mobile-menu" id="mobile-menu" aria-label="Menu">
+    <a class="nav-link" href="https://milhasegestao.com.br/">Home</a>
+    <a class="nav-link" href="https://milhasegestao.com.br/">Mentor</a>
+    <a class="nav-link" href="https://milhasegestao.com.br/">Resultados</a>
+    <a class="nav-link" href="https://milhasegestao.com.br/">Metodologia</a>
+    <a class="nav-link" href="https://milhasegestao.com.br/">Calculadora</a>
+    <span class="nav-link">Blog</span>
+  </nav>
+</header>
+
 <div class="stage">
 
   <!-- ===================== FASE 1 — CAPTURA INICIAL ===================== -->
   <section id="phase-capture">
     <div class="hero-block">
-      <p class="eyebrow">Diagnóstico financeiro · Cartões corporativos</p>
-      <h1>Descubra quanto dinheiro o seu negócio está <span class="accent">deixando na mesa</span> todos os meses.</h1>
-      <p class="lede">Digite abaixo o seu gasto médio mensal no cartão de crédito. Em segundos, revelamos quantas viagens e quanto valor a sua empresa perdeu no último ano.</p>
+      <p class="eyebrow">Pontos perdidos · Viagens perdidas</p>
+      <h1>Calculadora de voos perdidos</h1>
+      <p class="lede">Não perca mais viagens. Transforme seus gastos fixos em passagens aéreas e garanta que, na próxima viagem, o assento principal seja ocupado por você, e não pelo prejuízo.</p>
+      <p class="lede">Digite abaixo os seus gastos médios mensais no cartão de crédito. Em segundos, nossa análise revela quantas viagens você e a sua empresa perderam no último ano.</p>
     </div>
 
     <div class="calc-card">
@@ -492,12 +653,12 @@
         <span class="prefix">R$</span>
         <input id="spend-input" type="text" inputmode="numeric" autocomplete="off" placeholder="0,00" />
       </div>
-      <p class="hint" id="spend-hint">A análise é calibrada para gastos a partir de R$ 2.000/mês.</p>
-      <button class="btn" id="calc-btn">Calcular meu prejuízo</button>
+      <p class="hint" id="spend-hint">A análise é calibrada para gastos entre R$ 2.000 e R$ 500.000/mês.</p>
+      <button class="btn" id="calc-btn">Calcular minhas viagens perdidas</button>
       <div class="trust">
         <span class="pill-meta"><span class="check">✓</span> Resultado em segundos</span>
         <span class="pill-meta"><span class="check">✓</span> Cotação do dólar em tempo real</span>
-        <span class="pill-meta"><span class="check">✓</span> Dados reais de viagens</span>
+        <span class="pill-meta"><span class="check">✓</span> Dados aproximados</span>
       </div>
     </div>
   </section>
@@ -506,47 +667,34 @@
   <section class="result" id="phase-result">
     <div class="result-head">
       <p class="eyebrow">Diagnóstico concluído</p>
-      <h2>O seu negócio <span class="accent-red">perdeu dinheiro</span> no último ano. Veja os números frios.</h2>
     </div>
 
     <!-- Passo 1 -->
     <div class="step">
       <div class="step-tag"><span class="num">1</span><span class="ttl">O Diagnóstico Inicial</span></div>
       <h3>Com um gasto mensal de <span id="r-monthly">R$ 0,00</span>, o seu negócio tem um potencial gigantesco.</h3>
-      <p>Com esse volume de despesas, a sua empresa deveria estar acumulando uma quantidade massiva de milhas todos os meses. Sem a inteligência financeira aplicada, é muito provável que você esteja utilizando um cartão comum que pontua mal — deixando milhares de reais na mesa em vez de convertê-los em ativos para o negócio. Você está deixando o dinheiro ir pelo ralo a cada fatura paga.</p>
+      <p>Com esse volume de despesas, a sua empresa deveria estar acumulando uma quantidade massiva de milhas todos os meses. No entanto, sem a inteligência financeira aplicada, é muito provável que você esteja utilizando um cartão comum que pontua mal. O resultado? Está deixando de transformar custos fixos em dezenas de viagens nacionais e internacionais. A cada fatura paga, você perde a chance de voar muito mais.</p>
     </div>
 
     <!-- Passo 2 -->
     <div class="step">
-      <div class="step-tag"><span class="num">2</span><span class="ttl">O Cálculo do Prejuízo</span></div>
+      <div class="step-tag"><span class="num">2</span><span class="ttl">Cálculo das perdas</span></div>
       <h3>Os números exatos do que foi jogado fora em 12 meses.</h3>
       <div class="breakdown">
         <div class="brow">
-          <div>
-            <div class="b-main">Gasto anual em reais</div>
-            <div class="b-sub"><span id="r-monthly-row">R$ 0,00</span> × 12 meses</div>
-          </div>
+          <div class="b-main">Gasto anual em reais</div>
           <div class="b-val" id="r-annual-brl">R$ 0,00</div>
         </div>
         <div class="brow">
-          <div>
-            <div class="b-main">Gasto anual em dólar</div>
-            <div class="b-sub">cotação de hoje: R$ 5,30</div>
-          </div>
+          <div class="b-main">Gasto anual em dólar</div>
           <div class="b-val" id="r-annual-usd">US$ 0,00</div>
         </div>
         <div class="brow">
-          <div>
-            <div class="b-main">Pontos perdidos pelos gastos</div>
-            <div class="b-sub" id="r-mult-line">multiplicador ideal: 3,7 pts/USD · cartão Mastercard Black</div>
-          </div>
+          <div class="b-main">Pontos perdidos pelos gastos</div>
           <div class="b-val" id="r-points-spend">0 pts</div>
         </div>
         <div class="brow">
-          <div>
-            <div class="b-main">Bônus de adesão perdido</div>
-            <div class="b-sub">aplicável à sua faixa de gastos</div>
-          </div>
+          <div class="b-main">Bônus de adesão perdido</div>
           <div class="b-val" id="r-bonus">0 pts</div>
         </div>
         <div class="brow total">
@@ -572,35 +720,60 @@
     <div class="step">
       <div class="step-tag"><span class="num">3</span><span class="ttl">A Estratégia Revelada</span></div>
       <h3>Esse volume não é mágica — é inteligência financeira.</h3>
-      <p>O cálculo acima pressupõe uma estratégia específica e validada: utilizar o cartão ideal para a sua faixa exata de gastos (no seu caso, o <span class="strong" id="r-card-name">Mastercard Black</span>), combinado com a assinatura do <span class="strong">Clube LATAM Pass</span> — que custa apenas R$ 42,00 por mês.</p>
+      <p>O cálculo acima pressupõe uma estratégia específica e validada: utilizar o cartão ideal para a sua faixa exata de gastos (no seu caso, o <span class="strong" id="r-card-name">Mastercard Black</span>).</p>
       <p>É essa exata combinação de cartão certo + clube que ativa os maiores multiplicadores e garante o bônus de adesão logo nas primeiras faturas, maximizando o seu acúmulo de forma automática.</p>
-    </div>
-
-    <!-- Passo 4 -->
-    <div class="step">
-      <div class="step-tag"><span class="num">4</span><span class="ttl">A Decisão</span></div>
-      <h3>Todo mês sem essa estrutura, você está rasgando dinheiro.</h3>
-      <p>Atualmente, a sua empresa paga integralmente por deslocamentos corporativos que já poderiam estar sendo custeados pelos próprios gastos fixos da operação. Pare de perder viagens e lucros que pertencem legitimamente ao seu negócio.</p>
     </div>
 
     <!-- CTA -->
     <div class="cta">
       <span class="badge">Acesso imediato</span>
       <h3>Transforme seus gastos fixos em passagens aéreas a custo praticamente zero.</h3>
-      <p>Conheça o curso <span class="strong">Milhas e Gestão para Empresas</span> e aprenda o passo a passo definitivo para converter passivos em ativos e alavancar a saúde financeira do seu caixa.</p>
-      <a href="#" class="btn">Quero parar de perder dinheiro e acessar o curso</a>
+      <p>Conheça o curso <span class="strong">Milhas e Gestão para Empresas</span> e aprenda o passo a passo definitivo para converter os gastos mensais do seu negócio em viagens o ano inteiro.</p>
+      <a href="https://pay.kiwify.com.br/SSRFCI4" target="_blank" rel="noopener noreferrer" class="btn">Quero parar de perder viagens agora</a>
     </div>
 
-    <p class="footnote">Cálculo baseado na cotação USD/BRL de R$ 5,30 e na média de pontos por viagem da base voy8 (70.000 pts internacional · 22.000 pts nacional). Valores estimados para fins de simulação.</p>
   </section>
 </div>
+
+<!-- ===================== RODAPÉ INSTITUCIONAL ===================== -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="f-col f-brand">
+      <img src="assets/logo.svg" alt="Milhas &amp; Gestão" width="194" height="65" />
+      <div class="f-social">
+        <a href="https://www.instagram.com/milhasegestao" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M12 2.2c3.2 0 3.6 0 4.9.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.86s0 3.6-.07 4.86c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.9.07s-3.63 0-4.9-.07c-1.17-.05-1.8-.25-2.23-.41a3.7 3.7 0 0 1-1.38-.9 3.7 3.7 0 0 1-.9-1.38c-.16-.42-.36-1.06-.41-2.23C2.21 15.6 2.2 15.2 2.2 12s0-3.6.07-4.86c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41C8.4 2.21 8.8 2.2 12 2.2Zm0 1.8c-3.15 0-3.5 0-4.74.07-.9.04-1.38.19-1.7.32-.43.17-.74.37-1.06.69-.32.32-.52.63-.69 1.06-.13.32-.28.8-.32 1.7C3.42 8.78 3.4 9.12 3.4 12s0 3.22.07 4.46c.04.9.19 1.38.32 1.7.17.43.37.74.69 1.06.32.32.63.52 1.06.69.32.13.8.28 1.7.32 1.24.07 1.59.07 4.74.07s3.5 0 4.74-.07c.9-.04 1.38-.19 1.7-.32.43-.17.74-.37 1.06-.69.32-.32.52-.63.69-1.06.13-.32.28-.8.32-1.7.07-1.24.07-1.58.07-4.46s0-3.22-.07-4.46c-.04-.9-.19-1.38-.32-1.7a2.85 2.85 0 0 0-.69-1.06 2.85 2.85 0 0 0-1.06-.69c-.32-.13-.8-.28-1.7-.32C15.5 4 15.15 4 12 4Zm0 3.06A4.94 4.94 0 1 1 12 16.94 4.94 4.94 0 0 1 12 7.06Zm0 1.8a3.14 3.14 0 1 0 0 6.28 3.14 3.14 0 0 0 0-6.28Zm5.15-.66a1.15 1.15 0 1 1-2.3 0 1.15 1.15 0 0 1 2.3 0Z"/></svg>
+        </a>
+        <a href="https://www.youtube.com/@MilhaseGestao" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2 31.3 31.3 0 0 0 0 12a31.3 31.3 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1A31.3 31.3 0 0 0 24 12a31.3 31.3 0 0 0-.5-5.8ZM9.6 15.6V8.4l6.2 3.6-6.2 3.6Z"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <div class="f-col f-center">
+      <a href="https://milhasegestao.com.br/politicas-de-privacidade/" target="_blank" rel="noopener noreferrer">Política de Privacidade</a>
+      <p class="f-copy">© 2026 Milhas &amp; Gestão. Todos os direitos reservados.</p>
+    </div>
+
+    <div class="f-col f-info">
+      <div>
+        <h4>Endereço</h4>
+        <p>Rua Frei Manoel da Cruz, 291<br />Liberdade - BH | MG CEP: 31270-300</p>
+      </div>
+      <div>
+        <h4>Contato</h4>
+        <p><a href="tel:+5531990758431">(31) 9 9075-8431</a><br /><a href="mailto:contato@milhasegestao.com.br">contato@milhasegestao.com.br</a></p>
+      </div>
+    </div>
+  </div>
+</footer>
 
 <!-- ===================== FASE 2 — MODAL DE CAPTURA ===================== -->
 <div class="modal-overlay" id="modal-overlay">
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
     <button class="close-x" id="modal-close" aria-label="Fechar">×</button>
     <div class="ready"><span class="pulse"></span> Seu diagnóstico está pronto</div>
-    <h2 id="modal-title">Descobrimos exatamente quanto o seu negócio perdeu.</h2>
+    <h2 id="modal-title">Descobrimos quantas viagens você deixou de fazer</h2>
     <p class="desc">Preencha seus dados abaixo para liberar o seu resultado completo instantaneamente.</p>
 
     <form id="capture-form" novalidate>
@@ -634,11 +807,27 @@
          = 291.320 pts → 4 intl / 13 nac
      ============================================================ */
   var CONFIG = {
-    DOLLAR_RATE: 5.30,        // Cotacao_Dolar (USD/BRL)
+    DOLLAR_RATE: 5.30,        // Cotacao_Dolar (USD/BRL) — fallback; atualizado ao vivo
     INTL_TRIP_COST: 70000,    // Custo_Viagem_Int_voy8 (pts ida e volta)
     NAT_TRIP_COST: 22000,     // Custo_Viagem_Nac_voy8 (pts ida e volta)
-    MIN_SPEND: 2000           // gasto mínimo calibrado (R$/mês)
+    MIN_SPEND: 2000,          // gasto mínimo calibrado (R$/mês)
+    MAX_SPEND: 500000         // gasto máximo permitido (R$/mês)
   };
+
+  /* ----------------- Cotação do dólar ao vivo -----------------
+     Busca a cotação USD/BRL atual (AwesomeAPI) e atualiza CONFIG.DOLLAR_RATE,
+     para que o "Gasto anual em dólar" use sempre o dólar do momento.
+     Mantém 5,30 como fallback caso a API falhe ou ainda não tenha respondido. */
+  function atualizarDolar() {
+    return fetch("https://economia.awesomeapi.com.br/json/last/USD-BRL", { cache: "no-store" })
+      .then(function (r) { return r.json(); })
+      .then(function (j) {
+        var cot = j && j.USDBRL && parseFloat(j.USDBRL.bid);
+        if (cot && isFinite(cot) && cot > 0) CONFIG.DOLLAR_RATE = cot;
+      })
+      .catch(function () { /* falhou: mantém o último valor conhecido / fallback */ });
+  }
+  atualizarDolar(); // já busca a cotação ao carregar a página
 
   /* Tabela de Parâmetros Definitiva (faixas de gasto mensal).
      Enquadramento por faixa — sem escolha do usuário.
@@ -710,6 +899,8 @@
   spendInput.addEventListener("input", function () {
     var digits = spendInput.value.replace(/\D/g, "");
     spendCents = digits ? parseInt(digits, 10) : 0;
+    var maxCents = CONFIG.MAX_SPEND * 100;
+    if (spendCents > maxCents) spendCents = maxCents; // trava no teto, sem feedback
     renderSpend();
     clearError();
   });
@@ -718,7 +909,7 @@
 
   /* ----------------- Validação / erros ----------------- */
   var hint = document.getElementById("spend-hint");
-  var DEFAULT_HINT = "A análise é calibrada para gastos a partir de R$ 2.000/mês.";
+  var DEFAULT_HINT = "A análise é calibrada para gastos entre R$ 2.000 e R$ 500.000/mês.";
   function showError(msg) { hint.textContent = msg; hint.classList.add("error"); }
   function clearError() { hint.textContent = DEFAULT_HINT; hint.classList.remove("error"); }
 
@@ -731,6 +922,7 @@
       spendInput.focus();
       return;
     }
+    atualizarDolar(); // refresca a cotação enquanto o usuário preenche o modal
     openModal();
   });
 
@@ -749,12 +941,15 @@
 
   /* ----------------- Máscara de WhatsApp ----------------- */
   var whats = document.getElementById("f-whats");
-  whats.addEventListener("input", function () {
+  whats.addEventListener("input", function (e) {
+    // Detecta apagar (backspace/delete) para NÃO re-inserir o separador final,
+    // que antes travava o DDD em "(00) " e impedia apagá-lo.
+    var deleting = !!(e && e.inputType && e.inputType.indexOf("delete") === 0);
     var d = whats.value.replace(/\D/g, "").slice(0, 11);
     var out = "";
     if (d.length > 0) out = "(" + d.slice(0, 2);
-    if (d.length >= 2) out += ") ";
-    if (d.length > 2) out += d.slice(2, 7);
+    if (d.length > 2) out += ") " + d.slice(2, 7);
+    else if (d.length === 2 && !deleting) out += ") ";
     if (d.length > 7) out += "-" + d.slice(7, 11);
     whats.value = out;
   });
@@ -824,11 +1019,8 @@
   /* ----------------- Fase 3 → renderiza resultado ----------------- */
   function renderResult(r, lead) {
     document.getElementById("r-monthly").textContent = brl(r.monthlySpend);
-    document.getElementById("r-monthly-row").textContent = brl(r.monthlySpend);
     document.getElementById("r-annual-brl").textContent = brl(r.annualBRL);
     document.getElementById("r-annual-usd").textContent = usd(r.annualUSD);
-    document.getElementById("r-mult-line").textContent =
-      "multiplicador ideal: " + fmtMult.format(r.tier.mult) + " pts/USD · cartão " + r.tier.card;
     document.getElementById("r-points-spend").textContent = pts(r.pointsFromSpend);
     document.getElementById("r-bonus").textContent = pts(r.signupBonus);
     document.getElementById("r-card-name").textContent = r.tier.card;
@@ -841,6 +1033,9 @@
     document.getElementById("phase-capture").style.display = "none";
     var result = document.getElementById("phase-result");
     result.classList.add("open");
+    // ativa o link de compra da navbar apenas na tela de resultado
+    var navCta = document.getElementById("nav-cta");
+    if (navCta) navCta.setAttribute("href", "https://pay.kiwify.com.br/SSRFCI4");
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
@@ -848,6 +1043,17 @@
   spendInput.addEventListener("keydown", function (e) {
     if (e.key === "Enter") { e.preventDefault(); document.getElementById("calc-btn").click(); }
   });
+
+  /* ----------------- Navbar mobile: abre/fecha o menu ----------------- */
+  var burger = document.querySelector(".nav-burger");
+  var mobileMenu = document.getElementById("mobile-menu");
+  if (burger && mobileMenu) {
+    burger.addEventListener("click", function () {
+      var isOpen = mobileMenu.classList.toggle("open");
+      burger.setAttribute("aria-expanded", isOpen ? "true" : "false");
+      burger.setAttribute("aria-label", isOpen ? "Fechar menu" : "Abrir menu");
+    });
+  }
 })();
 </script>
 </body>
