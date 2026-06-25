@@ -705,13 +705,18 @@
       <p>Convertendo esse volume de pontos desperdiçados para a logística real da sua empresa, você deixou de fazer:</p>
       <div class="loss">
         <div class="loss-card">
-          <div class="big" id="r-intl">0</div>
-          <div class="lbl">viagens internacionais<br />ida e volta</div>
+          <div class="big" id="r-nat-rt">0</div>
+          <div class="lbl">viagens nacionais<br />ida e volta</div>
         </div>
         <span class="or">ou</span>
         <div class="loss-card">
-          <div class="big" id="r-nat">0</div>
-          <div class="lbl">viagens nacionais<br />ida e volta</div>
+          <div class="big" id="r-nat-ow">0</div>
+          <div class="lbl">viagens nacionais<br />só de ida</div>
+        </div>
+        <span class="or">ou</span>
+        <div class="loss-card">
+          <div class="big" id="r-intl">0</div>
+          <div class="lbl">viagens internacionais<br />ida e volta</div>
         </div>
       </div>
     </div>
@@ -808,8 +813,9 @@
      ============================================================ */
   var CONFIG = {
     DOLLAR_RATE: 5.30,        // Cotacao_Dolar (USD/BRL) — fallback; atualizado ao vivo
-    INTL_TRIP_COST: 70000,    // Custo_Viagem_Int_voy8 (pts ida e volta)
-    NAT_TRIP_COST: 22000,     // Custo_Viagem_Nac_voy8 (pts ida e volta)
+    NAT_RT_COST: 12000,       // milhas p/ passagem nacional ida e volta (média de mercado)
+    NAT_OW_COST: 6000,        // milhas p/ passagem nacional só de ida
+    INTL_RT_COST: 60000,      // milhas p/ passagem internacional ida e volta (econômica)
     MIN_SPEND: 2000,          // gasto mínimo calibrado (R$/mês)
     MAX_SPEND: 500000         // gasto máximo permitido (R$/mês)
   };
@@ -865,16 +871,18 @@
        gasto_anual_dolar  = gasto_anual_reais / Cotacao_Dolar
        pontos_gastos_ano  = gasto_anual_dolar * Multiplicador_Faixa_Com_Clube
        pontos_totais      = pontos_gastos_ano + Bonus_Adesao
-       viagens_int        = pontos_totais / Custo_Viagem_Int_voy8
-       viagens_nac        = pontos_totais / Custo_Viagem_Nac_voy8 */
+       viagens_nac_iv     = pontos_totais / NAT_RT_COST   (ida e volta)
+       viagens_nac_ida    = pontos_totais / NAT_OW_COST   (só de ida)
+       viagens_int        = pontos_totais / INTL_RT_COST  (ida e volta) */
   function calcular(monthlySpend) {
     var tier = getTier(monthlySpend);
     var annualBRL = monthlySpend * 12;
     var annualUSD = annualBRL / CONFIG.DOLLAR_RATE;
     var pointsFromSpend = Math.floor(annualUSD * tier.mult);
     var totalPoints = pointsFromSpend + tier.bonus;
-    var intlTrips = Math.floor(totalPoints / CONFIG.INTL_TRIP_COST);
-    var natTrips = Math.floor(totalPoints / CONFIG.NAT_TRIP_COST);
+    var natRoundTrips = Math.floor(totalPoints / CONFIG.NAT_RT_COST);
+    var natOneWayTrips = Math.floor(totalPoints / CONFIG.NAT_OW_COST);
+    var intlTrips = Math.floor(totalPoints / CONFIG.INTL_RT_COST);
     return {
       monthlySpend: monthlySpend,
       tier: tier,
@@ -883,8 +891,9 @@
       pointsFromSpend: pointsFromSpend,
       signupBonus: tier.bonus,
       totalPoints: totalPoints,
-      intlTrips: intlTrips,
-      natTrips: natTrips
+      natRoundTrips: natRoundTrips,
+      natOneWayTrips: natOneWayTrips,
+      intlTrips: intlTrips
     };
   }
 
@@ -981,7 +990,8 @@
       cartao: resultado.tier.card,
       pontos_totais: resultado.totalPoints,
       viagens_internacionais: resultado.intlTrips,
-      viagens_nacionais: resultado.natTrips
+      viagens_nacionais_iv: resultado.natRoundTrips,
+      viagens_nacionais_ida: resultado.natOneWayTrips
     };
     enviarLead(lead);
 
@@ -1025,8 +1035,9 @@
     document.getElementById("r-bonus").textContent = pts(r.signupBonus);
     document.getElementById("r-card-name").textContent = r.tier.card;
     document.getElementById("r-total").textContent = pts(r.totalPoints);
+    document.getElementById("r-nat-rt").textContent = r.natRoundTrips;
+    document.getElementById("r-nat-ow").textContent = r.natOneWayTrips;
     document.getElementById("r-intl").textContent = r.intlTrips;
-    document.getElementById("r-nat").textContent = r.natTrips;
   }
 
   function showResult() {
